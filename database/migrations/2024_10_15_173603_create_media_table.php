@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Candidates::class)->constrained('candidates');
             $table->enum('type',['video', 'photo']);
-            $table->text('url');
+            $table->string('file_path');  
             $table->integer('duration')->nullable();
             $table->timestamps();
         });

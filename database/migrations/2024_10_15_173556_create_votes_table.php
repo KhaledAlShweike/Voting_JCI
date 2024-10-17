@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained('users');
             $table->foreignIdFor(Candidates::class)->constrained('candidates');
             $table->foreignIdFor(Categories::class)->constrained('categories');
-            $table->unique(['user_id','candidate_id','category_id']);
+            $table->unique(['user_id','candidates_id','categories_id']);
             $table->timestamps();
         });
     }
