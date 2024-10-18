@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Candidates;
@@ -70,13 +71,13 @@ class CandidatesController extends Controller
 
     public function update(Request $request, $id)
     {
+        Log::info('Update method called for candidate ID: ' . $id);
         // Find the candidate by ID, or return a 404 error if not found
         $candidate = Candidates::find($id);
 
         if (!$candidate) {
             return response()->json(['message' => 'Candidate not found'], 404);
         }
-
         // Validate the request input
         $request->validate([
             'first_name' => 'required|string|max:255',
@@ -84,17 +85,12 @@ class CandidatesController extends Controller
             'position' => 'required|string|max:255',
             'last_position' => 'required|string|max:255',
             'jci_career' => 'required|string',
-            'category_id' => 'required|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id'
         ]);
-
         // Update the candidate's details
         $candidate->update($request->all());
-
         // Return the updated candidate data as JSON
-        return response()->json([
-            'message' => 'Candidate updated successfully!',
-            'candidate' => $candidate
-        ]);
+        return response()->json(['message' => 'Candidate updated successfully!', 'candidate' => $candidate], 201);
     }
 
     public function destroy($id)
