@@ -12,8 +12,6 @@ use Illuminate\Http\JsonResponse;
 class VotesController extends Controller
 {
 
-
-
     public function vote(Request $request, $candidateId): JsonResponse
     {
         $user = $request->user();
@@ -22,8 +20,8 @@ class VotesController extends Controller
         $categoryId = $candidate->category_id;
 
         $existingVote = Votes::where('user_id', $user->id)
-                            ->where('category_id', $categoryId)
-                            ->first();
+            ->where('category_id', $categoryId)
+            ->first();
 
         if ($existingVote) {
             return response()->json(['message' => 'You have already voted for a candidate in this category.'], 403);
