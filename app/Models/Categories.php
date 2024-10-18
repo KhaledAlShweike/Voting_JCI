@@ -9,14 +9,17 @@ class Categories extends Model
 {
     use HasFactory;
 
+    protected $fillable=[
+        'name'
+    ];
+
     public function Candidate()
-{
-    return $this->hasMany(Candidates::class);
-}
+    {
+        return $this->hasMany(Candidates::class);
+    }
 
-public function Vote()
-{
-    return $this->hasMany(Votes::class);
-}
-
+    public function Vote()
+    {
+        return $this->hasMany(Votes::class);
+    }
 }

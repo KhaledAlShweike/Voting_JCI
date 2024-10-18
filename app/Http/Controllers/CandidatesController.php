@@ -5,30 +5,54 @@ namespace App\Http\Controllers;
 use App\Models\Candidates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+
 
 class CandidatesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         Log::info('API routes loaded.'); // Add this line
 
+        $limit = $request->query('limit', null);
+        $category_id = $request->query('category_id', null);
+
+        $query = Candidates::latest();
+
+        if ($category_id) {
+            $query->where('category_id', $category_id);
+        }
+
+
+        if ($limit && is_numeric($limit)) {
+            $query->limit($limit);
+        }
+
         // Retrieve all candidates from the database
-        $candidates = Candidates::all();
+        $candidates = $query->get();
+
+        if ($candidates->isEmpty()) {
+            return response()->json(['message' => 'No candidates found'], 404);
+        }
 
         // Return the list of candidates as JSON
         return response()->json($candidates);
     }
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
             'last_position' => 'required|string|max:255',
             'jci_career' => 'required|string',
-            'category_id' => 'nullable|exists:categories,id',
+            'category_id' => 'required|exists:categories,id',
             'media.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,avi,mkv,mov|max:102400',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
 
         $candidate = Candidates::create([
             'first_name' => $request->first_name,
@@ -71,6 +95,21 @@ class CandidatesController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validate the request input
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'last_position' => 'required|string|max:255',
+            'jci_career' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'media.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,avi,mkv,mov|max:102400',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
+
         Log::info('Update method called for candidate ID: ' . $id);
         // Find the candidate by ID, or return a 404 error if not found
         $candidate = Candidates::find($id);
@@ -78,15 +117,6 @@ class CandidatesController extends Controller
         if (!$candidate) {
             return response()->json(['message' => 'Candidate not found'], 404);
         }
-        // Validate the request input
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'last_position' => 'required|string|max:255',
-            'jci_career' => 'required|string',
-            'category_id' => 'nullable|exists:categories,id'
-        ]);
         // Update the candidate's details
         $candidate->update($request->all());
         // Return the updated candidate data as JSON
