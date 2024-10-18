@@ -3,11 +3,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidates;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CandidatesController extends Controller
 {
     public function index()
     {
+        Log::info('API routes loaded.'); // Add this line
+
         // Retrieve all candidates from the database
         $candidates = Candidates::all();
 
@@ -22,7 +25,7 @@ class CandidatesController extends Controller
             'position' => 'required|string|max:255',
             'last_position' => 'required|string|max:255',
             'jci_career' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
             'media.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,avi,mkv,mov|max:102400',
         ]);
 

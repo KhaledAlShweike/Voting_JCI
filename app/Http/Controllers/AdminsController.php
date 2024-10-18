@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Candidates;
 use illuminate\Support\Facades\Auth;
 use App\Models\Admin;
@@ -16,161 +17,163 @@ class AdminsController extends Controller
      * Display a listing of the resource.
      */
 
-     public function showLoginForm()
-     {
-         return view('admin.login');
-     }
+    public function showLoginForm()
+    {
+        return view('admin.login');
+    }
 
-     public function login(Request $request)
-     {
-         $request->validate([
-             'code' => 'required',
-         ]);
+    public function login(Request $request)
+    {
+        $request->validate([
+            'code' => 'required',
+        ]);
 
-         // Check if the admin code exists
-         $admin = Admins::where('code', $request->code)->first();
+        // Check if the admin code exists
+        $admin = Admins::where('code', $request->code)->first();
 
-         if ($admin) {
-             // Log in the admin manually
-             Auth::login($admin);
+        if ($admin) {
+            // Log in the admin manually
+            Auth::login($admin);
 
-             // Redirect to the admin dashboard
-             return redirect()->route('admin.dashboard');
-         }
-
-         return redirect()->back()->withErrors(['code' => 'Invalid admin code.']);
-     }
-
-     public function dashboard()
-{
-    $categories = Categories::with(['candidates' => function ($query) {
-        $query->orderBy('votes', 'desc')->limit(1); // Assuming a 'votes' column exists
-    }])->get();
-
-    return view('admin.dashboard', compact('categories'));
-}
-
-public function showCategory($id)
-{
-    $category = Categories::with('candidates')->findOrFail($id);
-    return view('admin.category', compact('category'));
-}
-
-public function storeCandidate(Request $request)
-{
-    $request->validate([
-        'first_name' => 'required',
-        'last_name' => 'required',
-        'position' => 'required',
-        'category_id' => 'required|exists:categories,id',
-    ]);
-
-    Candidates::create($request->all());
-
-    return redirect()->route('admin.category.show', $request->category_id)->with('success', 'Candidate created successfully');
-}
-public function index()
-{
-    // Retrieve all candidates from the database
-    $candidates = Candidates::all();
-
-    // Return the list of candidates as JSON
-    return response()->json($candidates);
-}
-public function store(Request $request)
-{
-    $request->validate([
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'position' => 'required|string|max:255',
-        'last_position' => 'required|string|max:255',
-        'jci_career' => 'required|string',
-        'category_id' => 'required|exists:categories,id',
-        'media.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,avi,mkv,mov|max:102400',
-    ]);
-
-    $candidate = Candidates::create([
-        'first_name' => $request->first_name,
-        'last_name' => $request->last_name,
-        'position' => $request->position,
-        'last_position' => $request->last_position,
-        'jci_career' => $request->jci_career,
-        'category_id' => $request->category_id,
-    ]);
-
-    if ($request->hasFile('media')) {
-        foreach ($request->file('media') as $file) {
-            $type = in_array($file->getClientOriginalExtension(), ['mp4', 'avi', 'mkv', 'mov']) ? 'video' : 'image';
-
-            $filePath = $file->store('uploads', 'public');
-
-            $candidate->media()->create([
-                'file_path' => $filePath,
-                'type' => $type,
-            ]);
+            // Redirect to the admin dashboard
+            return redirect()->route('admin.dashboard');
         }
+
+        return redirect()->back()->withErrors(['code' => 'Invalid admin code.']);
     }
 
+    public function dashboard()
+    {
+        $categories = Categories::with(['candidates' => function ($query) {
+            $query->orderBy('votes', 'desc')->limit(1); // Assuming a 'votes' column exists
+        }])->get();
 
-    return response()->json(['message' => 'Candidate created successfully!', 'candidate' => $candidate], 201);
-}
-
-public function show($id)
-{
-    // Find the candidate by ID, or return a 404 error if not found
-    $candidate = Candidates::find($id);
-
-    if (!$candidate) {
-        return response()->json(['message' => 'Candidate not found'], 404);
+        return view('admin.dashboard', compact('categories'));
     }
 
-    // Return the candidate data as JSON
-    return response()->json($candidate);
-}
-
-public function update(Request $request, $id)
-{
-    // Find the candidate by ID, or return a 404 error if not found
-    $candidate = Candidates::find($id);
-
-    if (!$candidate) {
-        return response()->json(['message' => 'Candidate not found'], 404);
+    public function showCategory($id)
+    {
+        $category = Categories::with('candidates')->findOrFail($id);
+        return view('admin.category', compact('category'));
     }
 
-    // Validate the request input
-    $request->validate([
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'position' => 'required|string|max:255',
-        'last_position' => 'required|string|max:255',
-        'jci_career' => 'required|string',
-        'category_id' => 'required|exists:categories,id'
-    ]);
+    public function storeCandidate(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'position' => 'required',
+            'category_id' => 'required|exists:categories,id',
+        ]);
 
-    // Update the candidate's details
-    $candidate->update($request->all());
+        Candidates::create($request->all());
 
-    // Return the updated candidate data as JSON
-    return response()->json([
-        'message' => 'Candidate updated successfully!',
-        'candidate' => $candidate
-    ]);
-}
+        return redirect()->route('admin.category.show', $request->category_id)->with('success', 'Candidate created successfully');
+    }
+    public function index()
+    {
+        // Retrieve all candidates from the database
+        $candidates = Candidates::all();
 
-public function destroy($id)
-{
-    // Find the candidate by ID
-    $candidate = Candidates::find($id);
-
-    // If the candidate is not found, return a 404 error
-    if (!$candidate) {
-        return response()->json(['message' => 'Candidate not found'], 404);
+        // Return the list of candidates as JSON
+        return response()->json($candidates);
     }
 
-    // Delete the candidate
-    $candidate->delete();
+    
+    public function store(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'last_position' => 'required|string|max:255',
+            'jci_career' => 'required|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'media.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,avi,mkv,mov|max:102400',
+        ]);
 
-    // Return a success message
-    return response()->json(['message' => 'Candidate deleted successfully!']);
-}
+        $candidate = Candidates::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'position' => $request->position,
+            'last_position' => $request->last_position,
+            'jci_career' => $request->jci_career,
+            'category_id' => $request->category_id,
+        ]);
+
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $type = in_array($file->getClientOriginalExtension(), ['mp4', 'avi', 'mkv', 'mov']) ? 'video' : 'image';
+
+                $filePath = $file->store('uploads', 'public');
+
+                $candidate->media()->create([
+                    'file_path' => $filePath,
+                    'type' => $type,
+                ]);
+            }
+        }
+
+
+        return response()->json(['message' => 'Candidate created successfully!', 'candidate' => $candidate], 201);
+    }
+
+    public function show($id)
+    {
+        // Find the candidate by ID, or return a 404 error if not found
+        $candidate = Candidates::find($id);
+
+        if (!$candidate) {
+            return response()->json(['message' => 'Candidate not found'], 404);
+        }
+
+        // Return the candidate data as JSON
+        return response()->json($candidate);
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Find the candidate by ID, or return a 404 error if not found
+        $candidate = Candidates::find($id);
+
+        if (!$candidate) {
+            return response()->json(['message' => 'Candidate not found'], 404);
+        }
+
+        // Validate the request input
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'last_position' => 'required|string|max:255',
+            'jci_career' => 'required|string',
+            'category_id' => 'required|exists:categories,id'
+        ]);
+
+        // Update the candidate's details
+        $candidate->update($request->all());
+
+        // Return the updated candidate data as JSON
+        return response()->json([
+            'message' => 'Candidate updated successfully!',
+            'candidate' => $candidate
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        // Find the candidate by ID
+        $candidate = Candidates::find($id);
+
+        // If the candidate is not found, return a 404 error
+        if (!$candidate) {
+            return response()->json(['message' => 'Candidate not found'], 404);
+        }
+
+        // Delete the candidate
+        $candidate->delete();
+
+        // Return a success message
+        return response()->json(['message' => 'Candidate deleted successfully!']);
+    }
 }
