@@ -12,14 +12,21 @@ use App\Models\Categories;
 
 class AdminsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+
+
+
+     /*-----------------------------                                  -----------*/
 
      public function showLoginForm()
      {
          return view('admin.login');
      }
+
+
+
+     /*-----------------------------                                  -----------*/
+
 
      public function login(Request $request)
      {
@@ -41,6 +48,11 @@ class AdminsController extends Controller
          return redirect()->back()->withErrors(['code' => 'Invalid admin code.']);
      }
 
+
+
+     /*-----------------------------                                  -----------*/
+
+
      public function dashboard()
 {
     $categories = Categories::with(['candidates' => function ($query) {
@@ -50,11 +62,20 @@ class AdminsController extends Controller
     return view('admin.dashboard', compact('categories'));
 }
 
+
+
+/*-----------------------------                                  -----------*/
+
 public function showCategory($id)
 {
     $category = Categories::with('candidates')->findOrFail($id);
     return view('admin.category', compact('category'));
 }
+
+
+
+/*-----------------------------                                  -----------*/
+
 
 public function storeCandidate(Request $request)
 {
@@ -69,14 +90,20 @@ public function storeCandidate(Request $request)
 
     return redirect()->route('admin.category.show', $request->category_id)->with('success', 'Candidate created successfully');
 }
+
+
+
+/*-----------------------------                                  -----------*/
 public function index()
 {
-    // Retrieve all candidates from the database
     $candidates = Candidates::all();
 
-    // Return the list of candidates as JSON
     return response()->json($candidates);
 }
+
+
+/*-----------------------------                                  -----------*/
+
 public function store(Request $request)
 {
     $request->validate([
@@ -115,29 +142,34 @@ public function store(Request $request)
     return response()->json(['message' => 'Candidate created successfully!', 'candidate' => $candidate], 201);
 }
 
+
+
+/*-----------------------------                                  -----------*/
+
+
 public function show($id)
 {
-    // Find the candidate by ID, or return a 404 error if not found
     $candidate = Candidates::find($id);
 
     if (!$candidate) {
         return response()->json(['message' => 'Candidate not found'], 404);
     }
 
-    // Return the candidate data as JSON
     return response()->json($candidate);
 }
 
+
+
+/*-----------------------------                                  -----------*/
+
 public function update(Request $request, $id)
 {
-    // Find the candidate by ID, or return a 404 error if not found
     $candidate = Candidates::find($id);
 
     if (!$candidate) {
         return response()->json(['message' => 'Candidate not found'], 404);
     }
 
-    // Validate the request input
     $request->validate([
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
@@ -147,30 +179,28 @@ public function update(Request $request, $id)
         'category_id' => 'required|exists:categories,id'
     ]);
 
-    // Update the candidate's details
     $candidate->update($request->all());
 
-    // Return the updated candidate data as JSON
     return response()->json([
         'message' => 'Candidate updated successfully!',
         'candidate' => $candidate
     ]);
 }
 
+
+
+/*-----------------------------                                  -----------*/
+
 public function destroy($id)
 {
-    // Find the candidate by ID
     $candidate = Candidates::find($id);
 
-    // If the candidate is not found, return a 404 error
     if (!$candidate) {
         return response()->json(['message' => 'Candidate not found'], 404);
     }
 
-    // Delete the candidate
     $candidate->delete();
 
-    // Return a success message
     return response()->json(['message' => 'Candidate deleted successfully!']);
 }
 }
