@@ -19,13 +19,14 @@ return new class extends Migration
             $table->string("position");
             $table->string("last_position");
             $table->text("jci_career");
-            // $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Explicitly define category_id
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Ensure this line is present
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
      */
     public function down(): void
     {

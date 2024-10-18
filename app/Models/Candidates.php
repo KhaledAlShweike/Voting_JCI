@@ -13,7 +13,8 @@ class Candidates extends Model
         'last_name',
         'position',
         'last_position',
-        'jci_career'
+        'jci_career',
+        'category_id'
     ];
     public function Media()
     {
