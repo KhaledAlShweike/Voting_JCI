@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -27,3 +29,15 @@ Route::middleware('auth')->group(function () {
 // require __DIR__.'/auth.php';
 require __DIR__.'/api.php';
 
+
+
+Route::get('/send-mailersend-test', function () {
+    $details = [
+        'title' => 'Test Email via MailerSend SMTP',
+        'body' => 'This is a test email sent from Laravel using MailerSend SMTP.'
+    ];
+
+    Mail::to('recipient@example.com')->send(new \App\Mail\TestMailerSend($details));
+
+    return 'Test email sent via MailerSend!';
+});
