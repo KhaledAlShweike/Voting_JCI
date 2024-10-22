@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
 use App\Models\Candidates;
 use illuminate\Support\Facades\Auth;
 use App\Models\Admin;
