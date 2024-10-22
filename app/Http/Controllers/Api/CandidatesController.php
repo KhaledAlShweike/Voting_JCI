@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Candidates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 
 class CandidatesController extends Controller
@@ -18,6 +22,8 @@ class CandidatesController extends Controller
         $category_id = $request->query('category_id', null);
 
         $query = Candidates::latest();
+
+
 
         if ($category_id) {
             $query->where('category_id', $category_id);
@@ -53,6 +59,14 @@ class CandidatesController extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
         }
+
+        // $user = User::where('email', $request->email)->first();
+
+        // if (! $user || ! Hash::check($request->password, $user->password)) {
+        //     throw ValidationException::withMessages([
+        //         'email' => ['The provided credentials are incorrect.'],
+        //     ]);
+        // }
 
         $candidate = Candidates::create([
             'first_name' => $request->first_name,

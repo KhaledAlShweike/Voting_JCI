@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Media;
+use App\Http\Controllers\Controller;
+use App\Models\Notifications;
 use Illuminate\Http\Request;
 
-class MediaController extends Controller
+class NotificationsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +35,7 @@ class MediaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Media $media)
+    public function show(Notifications $notifications)
     {
         //
     }
@@ -42,7 +43,7 @@ class MediaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Media $media)
+    public function edit(Notifications $notifications)
     {
         //
     }
@@ -50,7 +51,7 @@ class MediaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Media $media)
+    public function update(Request $request, Notifications $notifications)
     {
         //
     }
@@ -58,7 +59,7 @@ class MediaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Media $media)
+    public function destroy(Notifications $notifications)
     {
         //
     }

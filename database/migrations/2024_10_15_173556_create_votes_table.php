@@ -18,10 +18,11 @@ return new class extends Migration
     {
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained('users');
-            $table->foreignIdFor(Candidates::class)->constrained('candidates');
-            $table->foreignIdFor(Categories::class)->constrained('categories');
-            $table->unique(['user_id','candidates_id','categories_id']);
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('candidate_id')->constrained('candidates');
+            $table->foreignId('category_id')->constrained('categories');
+            // Ensure that a user can only vote once per category
+            $table->unique(['user_id', 'category_id']);
             $table->timestamps();
         });
     }
