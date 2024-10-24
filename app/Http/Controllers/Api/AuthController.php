@@ -57,6 +57,8 @@ class AuthController extends Controller
 
         Log::info('Before :', $request->toArray());
 
+
+
         if ($user) {
             $token = $user->createToken($user->name . 'Auth-Token')->plainTextToken;
 
