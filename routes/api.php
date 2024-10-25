@@ -41,10 +41,13 @@ Route::delete('/candidates/{id}', [CandidatesController::class, 'destroy']);
 
 
 //Auth Auth Auth Auth Auth Auth Auth Auth Auth Auth
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+// Route::post('/login', [AuthController::class, 'login']);
+// Route::post('/register', [AuthController::class, 'register']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/profile', [AuthController::class, 'profile']);
-});
+// Route::middleware(['auth:sanctum'])->group(function () {
+//     Route::post('/logout', [AuthController::class, 'logout']);
+//     Route::get('/profile', [AuthController::class, 'profile']);
+// });
+
+
+require __DIR__ . '/auth.php';

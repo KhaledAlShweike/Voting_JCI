@@ -26,8 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// require __DIR__.'/auth.php';
-require __DIR__.'/api.php';
+;
 
 
 
@@ -41,3 +40,5 @@ Route::get('/send-mailersend-test', function () {
 
     return 'Test email sent via MailerSend!';
 });
+
+

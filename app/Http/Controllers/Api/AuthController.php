@@ -46,7 +46,6 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|max:255'
         ]);
 
-        Log::info('Before :', $request->toArray());
 
         $user = User::create([
             'name' => $request->name,
@@ -54,9 +53,6 @@ class AuthController extends Controller
             'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password)
         ]);
-
-        Log::info('Before :', $request->toArray());
-
 
 
         if ($user) {
