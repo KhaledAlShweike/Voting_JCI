@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -9,7 +10,7 @@ use MailerSend\Helpers\Builder\Variable;
 use MailerSend\Helpers\Builder\Personalization;
 use MailerSend\LaravelDriver\MailerSendTrait;
 
-class ExampleEmail extends Mailable
+class TestEmail extends Mailable
 {
     use Queueable, SerializesModels, MailerSendTrait;
 
@@ -31,8 +32,11 @@ class ExampleEmail extends Mailable
                 ['tag'],
                 // Advanced personalization
                 [
-                    new Personalization($to, [   'var' => 'variable','number' => 123, 'object' => [
-                               'key' => 'object-value'
+                    new Personalization($to, [
+                        'var' => 'variable',
+                        'number' => 123,
+                        'object' => [
+                            'key' => 'object-value'
                         ],
                         'objectCollection' => [
                             [

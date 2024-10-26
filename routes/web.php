@@ -24,21 +24,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-;
-
-
+});;
 
 Route::get('/send-mailersend-test', function () {
-    $details = [
-        'title' => 'Test Email via MailerSend SMTP',
-        'body' => 'This is a test email sent from Laravel using MailerSend SMTP.'
-    ];
+    try {
+        $details = [
+            'title' => 'Test Email via MailerSend SMTP',
+            'body' => 'This is a test email sent from Laravel using MailerSend SMTP.'
+        ];
 
-    Mail::to('recipient@example.com')->send(new \App\Mail\TestMailerSend($details));
+        $mailer = new \App\Mail\TestMailerSend($details);
+        $response = $mailer->build();
 
-    return 'Test email sent via MailerSend!';
+        return response()->json(['message' => 'Email sent successfully', 'response' => $response]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
 });
-
-
