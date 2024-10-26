@@ -57,9 +57,9 @@ class RegisterUserController extends Controller
 
             return response()->json([
                 'message' => 'Registration successful',
-                'user' => $user,
-                'token_type' => 'Bearer',
-                'token' => $token
+                'user' => $user
+                // 'token_type' => 'Bearer',
+                // 'token' => $token
             ], 201);
         } else {
             return response()->json([
