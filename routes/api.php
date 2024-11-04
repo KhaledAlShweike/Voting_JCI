@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CandidatesController;
 use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\VotesController;
+use App\Http\Controllers\CandidateMediaController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,7 @@ Route::delete('/candidates/{id}', [CandidatesController::class, 'destroy']);
 //voting locking and throttling route logic
 // Route::middleware('throttle:5,1')->post('/vote/{candidateId}', [VotesController::class, 'vote']);
 
+Route::post('/candidates', [CandidateMediaController::class, 'store']);
 
 
 require __DIR__ . '/auth.php';

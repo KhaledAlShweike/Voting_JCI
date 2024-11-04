@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\CandidateMediaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,3 +42,7 @@ Route::get('/send-mailersend-test', function () {
         return response()->json(['error' => $e->getMessage()], 500);
     }
 });
+
+
+Route::post('/candidates', [CandidateMediaController::class, 'store'])->name('candidates.store');
+
