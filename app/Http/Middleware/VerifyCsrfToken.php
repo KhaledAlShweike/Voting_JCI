@@ -10,6 +10,7 @@ class VerifyCsrfToken
     protected $except = [
         'api/*',
         '/*',
+        'candidates',
     ];
 
     public function handle(Request $request, Closure $next)
