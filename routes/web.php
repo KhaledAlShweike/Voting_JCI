@@ -43,6 +43,6 @@ Route::get('/send-mailersend-test', function () {
     }
 });
 
-
+//if we want to call it throw HTML form directly
 Route::post('/candidates', [CandidateMediaController::class, 'store'])->name('candidates.store');
 

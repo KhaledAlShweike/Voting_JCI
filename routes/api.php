@@ -32,6 +32,8 @@ Route::delete('/candidates/{id}', [CandidatesController::class, 'destroy']);
 //voting locking and throttling route logic
 // Route::middleware('throttle:5,1')->post('/vote/{candidateId}', [VotesController::class, 'vote']);
 
+
+
 Route::post('/candidates', [CandidateMediaController::class, 'store']);
 
 
