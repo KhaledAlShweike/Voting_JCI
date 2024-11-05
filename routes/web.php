@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\CandidateMediaController;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Http\Request;
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -27,23 +29,51 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Test email route
-Route::get('/send-mailersend-test', function () {
+
+
+
+
+Route::post('/send-email-to-users', function (Request $request) {
     try {
+        // Fetch all users who have verified their emails
+        $users = User::whereNotNull('email')->whereNotNull('email_verified_at')->get();
+
+        if ($users->isEmpty()) {
+            return response()->json(['message' => 'No verified users found.'], 404);
+        }
+
+        // Prepare the email details
         $details = [
             'title' => 'Test Email via MailerSend SMTP',
             'body' => 'This is a test email sent from Laravel using MailerSend SMTP.'
         ];
 
-        Mail::to('test@example.com')->send(new \App\Mail\TestMailerSend($details));
+        // Send email to each user
+        foreach ($users as $user) {
+            Mail::to($user->email)->send(new \App\Mail\TestMailerSend($details));
+        }
 
-        return response()->json(['message' => 'Email sent successfully']);
+        return response()->json(['message' => 'Emails sent successfully to all verified users.']);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
-})->name('send.mail.test');
+})->name('send.email.to.users');
+
+
 
 // Candidate media store route
 Route::post('/candidates', [CandidateMediaController::class, 'store'])
     ->name('candidates.store')
     ->middleware('auth'); // Add authentication middleware if required
+
+
+
+
+    Route::get('/send-test-email', function () {
+        Mail::raw('This is a test email from Laravel using Mailtrap.', function ($message) {
+            $message->to('khaledshwike.01@gmail.com')
+                    ->subject('Test Email');
+        });
+
+        return 'Test email sent!';
+    });
