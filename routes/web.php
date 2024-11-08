@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\CandidateMediaController;
+use App\Mail\TestEmail;
 use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,8 @@ Auth::routes(['verify'=>true]);
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
 
 // Profile routes under 'auth' middleware group
 Route::middleware('auth')->group(function () {
@@ -82,3 +85,11 @@ Route::post('/candidates', [CandidateMediaController::class, 'store'])
 
         return 'Test email sent!';
     });
+
+
+
+
+    Mail::to(users: $user->email)
+    ->cc(users: 'cc@domain.com')
+    ->bcc(users: 'bcc@domain.com')
+    ->send(mailable: new TestEmail());

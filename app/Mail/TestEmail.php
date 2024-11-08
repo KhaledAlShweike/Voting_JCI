@@ -22,15 +22,11 @@ class TestEmail extends Mailable
             ->text('emails.test_text')
             ->attachFromStorageDisk('public', 'example.png')
             ->mailersend(
-                // Template ID
                 null,
-                // Variables for simple personalization
                 [
                     new Variable($to, ['name' => 'Your Name'])
                 ],
-                // Tags
                 ['tag'],
-                // Advanced personalization
                 [
                     new Personalization($to, [
                         'var' => 'variable',
@@ -40,14 +36,14 @@ class TestEmail extends Mailable
                         ],
                         'objectCollection' => [
                             [
-                                'name' => 'John'
+                                'name' => 'MailerSend'
                             ],
                             [
-                                'name' => 'Patrick'
+                                'name' => 'Guru'
                             ]
                         ],
                     ])
                 ]
-        );
+            );
     }
 }
