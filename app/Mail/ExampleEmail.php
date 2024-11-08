@@ -31,8 +31,7 @@ class TestEmail extends Mailable
                 // Tags
                 ['tag'],
                 // Advanced personalization
-                [
-                    new Personalization($to, [
+                [   new Personalization($to, [
                         'var' => 'variable',
                         'number' => 123,
                         'object' => [
