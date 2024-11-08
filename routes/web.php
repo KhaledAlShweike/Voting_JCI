@@ -7,8 +7,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Facade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -17,6 +18,10 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 })->name('home');
+
+
+Auth::routes(['verify'=>true]);
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
