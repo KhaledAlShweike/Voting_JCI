@@ -14,21 +14,11 @@ use App\Models\Categories;
 
 class AdminsController extends Controller
 {
-
-
-
-
-     /*-----------------------------                                  -----------*/
-
+/*
      public function showLoginForm()
      {
          return view('admin.login');
      }
-
-
-
-     /*-----------------------------                                  -----------*/
-
 
      public function login(Request $request)
      {
@@ -49,12 +39,6 @@ class AdminsController extends Controller
 
          return redirect()->back()->withErrors(['code' => 'Invalid admin code.']);
      }
-
-
-
-     /*-----------------------------                                  -----------*/
-
-
      public function dashboard()
 {
     $categories = Categories::with(['candidates' => function ($query) {
@@ -63,21 +47,11 @@ class AdminsController extends Controller
 
     return view('admin.dashboard', compact('categories'));
 }
-
-
-
-/*-----------------------------                                  -----------*/
-
 public function showCategory($id)
 {
     $category = Categories::with('candidates')->findOrFail($id);
     return view('admin.category', compact('category'));
 }
-
-
-
-/*-----------------------------                                  -----------*/
-
 
 public function storeCandidate(Request $request)
 {
@@ -93,9 +67,6 @@ public function storeCandidate(Request $request)
     return redirect()->route('admin.category.show', $request->category_id)->with('success', 'Candidate created successfully');
 }
 
-
-
-/*-----------------------------                                  -----------*/
 public function index()
 {
     $candidates = Candidates::all();
@@ -103,8 +74,6 @@ public function index()
     return response()->json($candidates);
 }
 
-
-/*-----------------------------                                  -----------*/
 
 public function store(Request $request)
 {
@@ -144,11 +113,6 @@ public function store(Request $request)
     return response()->json(['message' => 'Candidate created successfully!', 'candidate' => $candidate], 201);
 }
 
-
-
-/*-----------------------------                                  -----------*/
-
-
 public function show($id)
 {
     $candidate = Candidates::find($id);
@@ -159,10 +123,6 @@ public function show($id)
 
     return response()->json($candidate);
 }
-
-
-
-/*-----------------------------                                  -----------*/
 
 public function update(Request $request, $id)
 {
@@ -190,9 +150,6 @@ public function update(Request $request, $id)
 }
 
 
-
-/*-----------------------------                                  -----------*/
-
 public function destroy($id)
 {
     $candidate = Candidates::find($id);
@@ -205,4 +162,31 @@ public function destroy($id)
 
     return response()->json(['message' => 'Candidate deleted successfully!']);
 }
+
+
+*/
+    public function showLogin()
+    {
+        return view('admin.login');
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'code' => 'required',
+        ]);
+
+        if ($request->code == env('ADMIN_CODE')) {
+            Auth::guard('web')->loginUsingId(1); // Simplified authentication
+            return redirect()->route('admin.dashboard');
+        }
+
+        return back()->withErrors(['code' => 'Invalid login code.']);
+    }
+
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
+
 }

@@ -3,65 +3,83 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Candidates;
+use App\Models\Categories;
 use App\Models\User;
-use App\Models\Users;
+use App\Models\Vote;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function showRegister()
     {
-        //
+        return view('user.register');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function register(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+        Auth::login($user);
+
+        return redirect()->route('user.dashboard');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function showLogin()
     {
-        //
+        return view('user.login');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $users)
+    public function login(Request $request)
     {
-        //
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($request->only('email', 'password'))) {
+            return redirect()->route('user.dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials.']);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $users)
+    public function dashboard()
     {
-        //
+        $categories = Categories::all();
+        return view('user.dashboard', compact('categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $users)
+    public function showCandidates(Categories $category)
     {
-        //
+        $candidates = $category->candidates;
+        return view('user.candidates', compact('category', 'candidates'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $users)
+    public function vote(Categories $category, Candidates $candidate)
     {
-        //
+        $existingVote = Vote::where('user_id', Auth::id())->where('candidate_id', $candidate->id)->first();
+
+        if (!$existingVote) {
+            Vote::create([
+                'user_id' => Auth::id(),
+                'candidate_id' => $candidate->id,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Vote cast successfully!');
     }
 }
+
