@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 
-class CandidatesController extends Controller
+class CandidateController extends Controller
 {
     public function index(Request $request)
     {

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notifications;
 use Illuminate\Http\Request;
 
-class NotificationsController extends Controller
+class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.

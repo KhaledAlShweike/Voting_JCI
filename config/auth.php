@@ -13,6 +13,9 @@ return [
     |
     */
 
+
+
+
     'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
@@ -40,8 +43,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins', // Ensure this provider exists if you have a separate admins table
+        ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | User Providers
