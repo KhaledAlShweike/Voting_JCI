@@ -13,7 +13,7 @@ class EmailVerificationNotificationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        
+
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard', absolute: false));
         }
@@ -29,4 +29,4 @@ class EmailVerificationNotificationController extends Controller
 
 
 
-ط
+
